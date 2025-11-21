@@ -52,6 +52,27 @@ let write_file path graph =
   close_out ff ;
   ()
 
+let export path graph =
+
+  (* Open a write-file. *)
+  let ff = open_out path in
+
+  (* Write in this file. *)
+  fprintf ff "digraph finite_state_machine {\n
+    fontname=\"Helvetica,Arial,sans-serif\"\n
+    node [fontname=\"Helvetica,Arial,sans-serif\"]\n
+    edge [fontname=\"Helvetica,Arial,sans-serif\"]\n
+    rankdir=LR;\n
+    node [shape = circle];\n" ;
+
+  (* Write all arcs *)
+  let _ = e_fold graph (fun count arc -> fprintf ff " %d -> %d [label = \"%d\"];\n" arc.src arc.tgt arc.lbl ; count + 1) 0 in
+  
+  fprintf ff "}" ;
+  
+  close_out ff ;
+  ()
+
 (* Reads a line with a node. *)
 let read_node graph line =
   try Scanf.sscanf line "n %f %f %d" (fun _ _ id -> new_node graph id)
