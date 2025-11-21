@@ -31,6 +31,7 @@ let () =
   let graph = gmap graph (fun x -> int_of_string x) in
   let graph = add_arc graph 0 2 100000000000 in
   let graph = add_arc graph 4 0 42424242 in
+  export "test.txt" graph;
   let graph = gmap graph (fun x -> string_of_int x) in
 
   (* Rewrite the graph that has been read. *)

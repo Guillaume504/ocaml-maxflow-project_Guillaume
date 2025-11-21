@@ -58,15 +58,15 @@ let export path graph =
   let ff = open_out path in
 
   (* Write in this file. *)
-  fprintf ff "digraph finite_state_machine {\n
-    fontname=\"Helvetica,Arial,sans-serif\"\n
-    node [fontname=\"Helvetica,Arial,sans-serif\"]\n
-    edge [fontname=\"Helvetica,Arial,sans-serif\"]\n
-    rankdir=LR;\n
-    node [shape = circle];\n" ;
+  fprintf ff "digraph finite_state_machine {
+  fontname=\"Helvetica,Arial,sans-serif\"
+  node [fontname=\"Helvetica,Arial,sans-serif\"]
+  edge [fontname=\"Helvetica,Arial,sans-serif\"]
+  rankdir=LR;
+  node [shape = circle];\n" ;
 
   (* Write all arcs *)
-  let _ = e_fold graph (fun count arc -> fprintf ff " %d -> %d [label = \"%d\"];\n" arc.src arc.tgt arc.lbl ; count + 1) 0 in
+  let _ = e_fold graph (fun count arc -> fprintf ff "  %d -> %d [label = \"%d\"];\n" arc.src arc.tgt arc.lbl ; count + 1) 0 in
   
   fprintf ff "}" ;
   

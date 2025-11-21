@@ -2,3 +2,5 @@ _build/
 outfile
 *~
 *.exe
+*.txt
+*.svg
