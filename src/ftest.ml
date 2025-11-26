@@ -28,11 +28,11 @@ let () =
 
   (* Open file *)
   let graph = from_file infile in
-  let graph = gmap graph (fun x -> int_of_string x) in
+  let graph = gmap graph int_of_string in
   let graph = add_arc graph 0 2 100000000000 in
   let graph = add_arc graph 4 0 42424242 in
   export "test.txt" graph;
-  let graph = gmap graph (fun x -> string_of_int x) in
+  let graph = gmap graph string_of_int in
 
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
