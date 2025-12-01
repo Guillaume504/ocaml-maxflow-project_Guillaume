@@ -1,5 +1,5 @@
 open Graph
-open Tools
+(*open Tools*)
 
 type flot = int
 
@@ -24,17 +24,36 @@ let fordfulkerson graph origin destination =
     )
   in*)
   
-  let rec find_path idnode acu =
-    let outarcs = out_arcs graph idnode in
-    if (List.exists (fun x -> (x.tgt == destination && arc_flowable x)) outarcs) then (true, destination::acu)
+  let rec find_path graph1 idnode acu =
+    let outarcs = out_arcs graph1 idnode in
+    if (List.exists (fun x -> (x.tgt == destination && arc_flowable x)) outarcs) then (true, List.rev (destination::acu))
     else (
       let rec iterarcs = function
         | [] -> (false, [])
-        | arc::rest -> if (arc_flowable arc) then 
-          let (res,path) = find_path (arc.tgt) (arc.tgt::acu) in
+        | arc::rest -> if (arc_flowable arc && not (List.exists (fun x -> if (x == arc.tgt) then true else false) acu)) then 
+          let (res,path) = find_path graph1 (arc.tgt) (arc.tgt::acu) in
             if res then (res,path) else iterarcs rest
         else iterarcs rest
       in
         iterarcs outarcs
     )
-  in assert false
+  in
+  find_path graph origin []
+
+  (*let rec mainloop graph =
+    let (bool, path) = find_path graph origin [] in
+    if bool then (
+      let rec find_flow inid maxflow = function
+        | [] -> maxflow
+        | x::rest -> match find_arc graph inid x with
+          | None -> failwith "L'impossible est arrivé"
+          | Some y -> find_flow x (max maxflow y.lbl) rest
+      in 
+      let maxflow = find_flow origin 0 path in
+      let rec add_flow init = function
+        | 
+      mainloop
+    ) else (
+      graph
+    )
+  in*)

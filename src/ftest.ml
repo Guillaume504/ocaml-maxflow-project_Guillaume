@@ -1,5 +1,6 @@
 open Gfile
 open Tools
+open Fordfulk
     
 let () =
 
@@ -29,9 +30,10 @@ let () =
   (* Open file *)
   let graph = from_file infile in
   let graph = gmap graph int_of_string in
-  let graph = add_arc graph 0 2 100000000000 in
-  let graph = add_arc graph 4 0 42424242 in
-  export "test.txt" graph;
+  let (_bool, path) = fordfulkerson graph 0 5 in
+  let path = List.map string_of_int path in
+  let path = String.concat " " path in
+  Printf.printf "%s\n%!" path;
   let graph = gmap graph string_of_int in
 
   (* Rewrite the graph that has been read. *)
