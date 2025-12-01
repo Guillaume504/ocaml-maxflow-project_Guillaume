@@ -66,7 +66,7 @@ let export path graph =
   node [shape = circle];\n" ;
 
   (* Write all arcs *)
-  let _ = e_fold graph (fun count arc -> fprintf ff "  %d -> %d [label = \"%d\"];\n" arc.src arc.tgt arc.lbl ; count + 1) 0 in
+  let _ = e_fold graph (fun count arc -> fprintf ff "  %d -> %d [label = \"%s\"];\n" arc.src arc.tgt arc.lbl ; count + 1) 0 in
   
   fprintf ff "}" ;
   
