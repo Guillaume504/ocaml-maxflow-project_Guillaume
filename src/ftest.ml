@@ -1,6 +1,7 @@
 open Gfile
-open Tools
-open Fordfulk
+(*open Tools*)
+(*open Fordfulk*)
+open Bipartite
     
 let () =
 
@@ -28,12 +29,12 @@ let () =
   in
 
   (* Open file *)
-  let graph = from_file infile in
-  let graph = gmap graph int_of_string in
-  let graph = fordfulkerson_string graph source sink in
+  let graph = bipartiteresolution infile source sink in
+  (*let graph = gmap graph int_of_string in*)
+  (*let graph = fordfulkerson_string graph source sink in
   (*let graph = fordfulkerson graph source sink in
   let graph = gmap graph string_of_int in*)
-  export "test.txt" graph;
+  export "test.txt" graph;*)
 
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile graph in
