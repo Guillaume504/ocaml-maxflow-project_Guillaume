@@ -78,8 +78,26 @@ let bipartiteresolution path1 source sink =
     
     close_out ff ;
     ()
+
   in
   let graph5 = bi_from_file path1 in 
   let graph5 = fordfulkerson_string graph5 source sink in
   bi_export "test.txt" graph5;
+
+  let bi_write_file path3 graph6 =
+
+    (* Open a write-file. *)
+    let ff = open_out path3 in
+
+    (* Write all arcs *)
+    let _ = e_fold graph6 (fun count arc -> 
+      (if arc.src == 0 && out_arcs graph6 arc.src = [] then fprintf ff "%s n'a pas eu de job" (Hashtbl.find hashtidname arc.tgt)
+        else if arc.src == 0 || arc.tgt == (-1) || arc.lbl = "0/1" then ()
+        else fprintf ff "%s a eu le job %s\n" (Hashtbl.find hashtidname arc.src) (Hashtbl.find hashtidname arc.tgt)) ; count + 1) 0 in
+    
+    close_out ff ;
+    ()
+
+  in 
+  let () = bi_write_file "response.txt" graph5 in
   graph5
