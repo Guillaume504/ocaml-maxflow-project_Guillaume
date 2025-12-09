@@ -52,6 +52,11 @@ let write_file path graph =
   close_out ff ;
   ()
 
+let labelwithcapacity graph arc =
+  fun arc -> match find_arc bires.graph arc.src arc.tgt with
+    | None -> failwith "Impossible"
+    | Some x -> Printf.sprintf "%d/%d" arc.lbl x.lbl
+
 let export ?(nodename=string_of_int) ?(labelform=(fun x -> string_of_int x.lbl)) path graph =
 
   (* Open a write-file. *)

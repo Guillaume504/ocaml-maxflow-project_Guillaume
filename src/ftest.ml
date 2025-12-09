@@ -35,10 +35,7 @@ let () =
   let graph = trimgraph graph in
   let () = bi_write_file bires.namefromid "answer.txt" graph in
 
-  export ~nodename:bires.namefromid
-  ~labelform:(fun arc -> match find_arc bires.graph arc.src arc.tgt with
-    | None -> failwith "Impossible"
-    | Some x -> Printf.sprintf "%d/%d" arc.lbl x.lbl) outfile graph;
+  export ~nodename:bires.namefromid ~labelform:(labelwithcapacity bires.graph) outfile graph;
 
   ()
 
