@@ -52,7 +52,7 @@ let write_file path graph =
   close_out ff ;
   ()
 
-let export path graph =
+let export ?(nodename=string_of_int) ?(labelform=(fun x -> string_of_int x.lbl)) path graph =
 
   (* Open a write-file. *)
   let ff = open_out path in
@@ -66,7 +66,7 @@ let export path graph =
   node [shape = circle];\n" ;
 
   (* Write all arcs *)
-  let _ = e_fold graph (fun count arc -> fprintf ff "  %d -> %d [label = \"%s\"];\n" arc.src arc.tgt arc.lbl ; count + 1) 0 in
+  let _ = e_fold graph (fun count arc -> fprintf ff "  %s -> %s [label = \"%s\"];\n" (nodename arc.src) (nodename arc.tgt) (labelform arc) ; count + 1) 0 in
   
   fprintf ff "}" ;
   
@@ -132,4 +132,3 @@ let from_file path =
   
   close_in infile ;
   final_graph
-  

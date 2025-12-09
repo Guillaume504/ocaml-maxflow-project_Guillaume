@@ -1,7 +1,6 @@
+
 open Graph
 open Tools
-
-type flot = int
 
 (* renvoie true ssi l'arc a un flow admissible > 0 *)
 let arc_flowable arc = if (arc.lbl>0) then true else false
@@ -77,9 +76,3 @@ let fordfulkerson graph origin destination =
   e_fold graph (fun gr arc1 -> match find_arc ecartgraph arc1.src arc1.tgt with
     | None -> let arc2 = {arc1 with lbl = 0} in new_arc gr arc2
     | Some x -> let arc2 = {arc1 with lbl = (max 0 (arc1.lbl-x.lbl))} in new_arc gr arc2) (clone_nodes graph)
-  
-let fordfulkerson_string graph origin destination =
-  let graph2 = fordfulkerson graph origin destination in
-  e_fold graph2 (fun gr arc1 -> match find_arc graph arc1.src arc1.tgt with
-    | None -> failwith "Impossible"
-    | Some x -> let arc2 = {arc1 with lbl = Printf.sprintf "%d/%d" arc1.lbl x.lbl} in new_arc gr arc2) (clone_nodes graph)

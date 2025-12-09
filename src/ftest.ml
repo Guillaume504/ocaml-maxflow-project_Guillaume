@@ -1,7 +1,7 @@
 open Gfile
-(*open Tools*)
-(*open Fordfulk*)
-open Bipartite
+open Graph
+open Fordfulk
+open Bfile
     
 let () =
 
@@ -24,20 +24,21 @@ let () =
   and outfile = Sys.argv.(4)
   
   (* These command-line arguments are not used for the moment. *)
-  and source = int_of_string Sys.argv.(2)
-  and sink = int_of_string Sys.argv.(3)
+  and _source = int_of_string Sys.argv.(2)
+  and _sink = int_of_string Sys.argv.(3)
   in
 
   (* Open file *)
-  let graph = bipartiteresolution infile source sink in
-  (*let graph = gmap graph int_of_string in*)
-  (*let graph = fordfulkerson_string graph source sink in
-  (*let graph = fordfulkerson graph source sink in
-  let graph = gmap graph string_of_int in*)
-  export "test.txt" graph;*)
+  let bires = bi_from_file infile in
+  let graph = bires.graph in 
+  let graph = fordfulkerson graph 0 (-1) in
+  let graph = trimgraph graph in
+  let () = bi_write_file bires.namefromid "answer.txt" graph in
 
-  (* Rewrite the graph that has been read. *)
-  let () = write_file outfile graph in
+  export ~nodename:bires.namefromid
+  ~labelform:(fun arc -> match find_arc bires.graph arc.src arc.tgt with
+    | None -> failwith "Impossible"
+    | Some x -> Printf.sprintf "%d/%d" arc.lbl x.lbl) outfile graph;
 
   ()
 
