@@ -1,10 +1,13 @@
-
 (* Type of a directed graph in which arcs have labels of type 'a. 
  * This type is deliberately abstract. *)
 type 'a graph
 
 (* Each node has a unique identifier (a number). *)
 type id = int
+
+type flow = int
+
+type capacity = int
 
 (* Type of an arc (edge) with labels of type 'a *)
 type 'a arc =

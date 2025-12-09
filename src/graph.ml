@@ -1,38 +1,15 @@
 (*
- 
   You do not need to read this file for the project. Read graph.mli instead.
 
   You may read it though, out of curiosity.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 *)
 
 
 type id = int
+
+type flow = int
+
+type capacity = int
 
 type 'a arc =
   { src: id ;
