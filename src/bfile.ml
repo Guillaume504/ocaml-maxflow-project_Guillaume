@@ -5,8 +5,8 @@ open Tools
 type path = string
 
 type bipartres = 
-   { graph: id graph ;
-     namefromid: (id -> string) }
+  { graph: id graph ;
+    namefromid: (id -> string) }
 
 (* Ensure that the given node exists in the graph. If not, create it. 
  * (Necessary because the website we use to create online graphs does not generate correct files when some nodes have been deleted.) *)
