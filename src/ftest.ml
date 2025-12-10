@@ -1,5 +1,4 @@
 open Gfile
-open Graph
 open Fordfulk
 open Bfile
     

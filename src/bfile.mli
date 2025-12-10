@@ -16,4 +16,4 @@ val bi_from_file: path -> bipartres
 
 (* Remove the origin and destination nodes from the given graph.
  * The origin must have the id '0' and the destination the id '-1' *)
-val trimgraph: 'a graph -> 'a graph
+val trimgraph: flow graph -> flow graph

@@ -52,8 +52,7 @@ let write_file path graph =
   close_out ff ;
   ()
 
-let labelwithcapacity graph arc =
-  fun arc -> match find_arc bires.graph arc.src arc.tgt with
+let labelwithcapacity graph arc = match find_arc graph arc.src arc.tgt with
     | None -> failwith "Impossible"
     | Some x -> Printf.sprintf "%d/%d" arc.lbl x.lbl
 

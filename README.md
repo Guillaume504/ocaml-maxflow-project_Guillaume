@@ -20,3 +20,5 @@ A [`Makefile`](Makefile) provides some useful commands:
 
 In case of trouble with the VSCode extension (e.g. the project does not build, there are strange mistakes), a common workaround is to (1) close vscode, (2) `make clean`, (3) `make build` and (4) reopen vscode (`make edit`).
 
+Commande pour lancer l'algorithme de matching bipartie sur le fichier graphs/bipartite.txt
+./ftest.exe graphs/bipartite.txt 0 0 test.txt && dot -Tsvg test.txt > test.svg
