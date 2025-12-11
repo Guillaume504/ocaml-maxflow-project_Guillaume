@@ -6,12 +6,17 @@ type path = string
 (* Return true ifn the arc has a positive remaining capacity. *)
 let arc_flowable arc = if (arc.lbl.value>0) then true else false
 
+(* Add a number to the value of the label of an arc between 2 nodes.
+ * If the arc does not exist, it is created *)
 let dijk_add_arc gr id1 id2 n = 
   let value1 = 
     match find_arc gr id1 id2 with 
+    (* If the arc does not exist, then it is a backward arc. *)
     | None -> (match find_arc gr id2 id1 with
       | None -> failwith "Impossible"
+      (* Backward arcs have their cost value opposed to their equivalent forward arc cost. *)
       | Some arc -> {value=0;cost=(-arc.lbl.cost)})
+
     | Some arc -> arc.lbl
   in 
     new_arc gr {src=id1; tgt=id2; lbl={value=(value1.value+n);cost=value1.cost}}
@@ -21,44 +26,66 @@ let busackergowen graph origin destination =
   (* The algorithm fails if either Origin or Destination are not in the graph. *)
   if (not (node_exists graph origin) || not (node_exists graph destination)) then failwith "Id origine ou destination non existant" ;
 
+  (* Main loop of the algorithm, continue until no path can be found between the Origin and Destination nodes. *)
   let rec dijk_mainloop graph3 = 
 
-    let marked = origin in 
+    (* Create the hashtable containing the marking state, the current cost and the path from origin of each nodes.
+     * Each node is initialized as not marked (false), infinite cost and no path since they are yet to be reached. *)
     let hashmarked = Hashtbl.create 12 in 
     n_iter graph3 (fun id -> Hashtbl.add hashmarked id (false, max_int, []));
-    Hashtbl.replace hashmarked marked (true,0,[]);
 
+    (* Mark the origin node as it is considered reached at the beginning. *)
+    Hashtbl.replace hashmarked origin (true,0,[]);
+
+    (* Find the path of lowest cost. *)
     let rec dijk_find_path graph1 lastmarked =
 
       (* If destination is marked, then stop the search. *)
       let (bool1, _, _) = Hashtbl.find hashmarked destination in
-
       if bool1 then true
+
       else (
 
-        let (_,currentmarkedcost,path) = Hashtbl.find hashmarked lastmarked in
+        (* Get the cost and the path of the last marked node. *)
+        let (_,currentmarkedcost,currentmarkedpath) = Hashtbl.find hashmarked lastmarked in
 
+        (* Get the out_arcs of the last marked node. *)
         let outarcs = out_arcs graph1 lastmarked in 
 
+        (* Update the cost of unmarked nodes if their new cost is lower. *)
         let rec updatenodescost = function
           | [] -> ()
+
+          (* If the arc has remaining capacity. *)
           | arc::rest -> if arc_flowable arc then
+
+            (* Get info of the destination node of the arc. *)
             let (bool2, nodecost1, _path1) = Hashtbl.find hashmarked arc.tgt in
+
+            (* Calculate the cost to reach the destination node of the arc using the arc. *)
             let newcost = currentmarkedcost+arc.lbl.cost in
+
+            (* If the destination node of the arc is marked, or the new cost is higher than the current cost, do not update the node. *)
             if (bool2 || nodecost1<=newcost) then ()
-            else Hashtbl.replace hashmarked arc.tgt (false,newcost,arc.tgt::path); updatenodescost rest
+
+            (* Otherwise update the cost and path of the node. *)
+            else Hashtbl.replace hashmarked arc.tgt (false,newcost,arc.tgt::currentmarkedpath); updatenodescost rest
           else updatenodescost rest
 
         in 
         updatenodescost outarcs;
+
+        (* Get the info of the unmarked node with lowest cost. *)
         let (cost,nodetomark,path) = n_fold graph1 (fun (currentcost,currentnode,currentpath) id -> let (bool,cost,path) = Hashtbl.find hashmarked id in
           if (bool || cost>=currentcost) then (currentcost,currentnode,currentpath)
           else (cost,id,path)) (max_int,0,[]) in 
         
+        (* If all reachable nodes are marked, stop the search, no path can be found. *)
         if (cost == max_int) then false
 
         else (
 
+          (* Mark the unmarked node with lowest cost. *)
           Hashtbl.replace hashmarked nodetomark (true,cost,path);
         
           dijk_find_path graph1 nodetomark
@@ -66,15 +93,17 @@ let busackergowen graph origin destination =
       )
 
     in
+    let bool = dijk_find_path graph3 origin in
 
-    let bool = dijk_find_path graph3 marked in
-
+    (* If a path was found. *)
     if bool then (
 
+      (* Get the found path to the Destination node. *)
       let (_,_,path) = Hashtbl.find hashmarked destination in 
 
       let path = List.rev path in
 
+      (* Find the maximum allowable flow in the found path. *)
       let rec find_flow inid maxflow = function
         | [] -> maxflow
         | x::rest -> match find_arc graph3 inid x with
@@ -105,10 +134,16 @@ let busackergowen graph origin destination =
 
       in 
       let graph3 = add_flow graph3 origin path in
+
+      (* Clear the hashtable. *)
       Hashtbl.reset hashmarked;
+
       dijk_mainloop graph3
 
-    ) else (
+    ) 
+  
+    (* If no path can be found. *)
+    else (
       graph3
     )
 

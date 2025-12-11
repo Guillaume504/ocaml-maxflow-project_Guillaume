@@ -5,6 +5,7 @@ type 'a graph
 (* Each node has a unique identifier (a number). *)
 type id = int
 
+(* Record type containing the value of an arc as well as its cost. *)
 type 'a dijk = 
   { value: 'a ;
     cost: int }

@@ -1,11 +1,10 @@
 open Printf
 open Graph
-open Tools
 
 type path = string
 
 type bipartres = 
-  { graph: id graph ;
+  { graph: int graph ;
     namefromid: (id -> string) }
 
 (* Ensure that the given node exists in the graph. If not, create it. 
@@ -114,11 +113,3 @@ let bi_from_file path =
 
   close_in infile ;
   {graph=final_graph; namefromid=(Hashtbl.find hashtidname)}
-
-let trimgraph graph = 
-
-  (* Clone the graph nodes except Origin and Destination. *)
-  let trimmedgraph = n_fold graph (fun gr i -> if i==0 || i==(-1) then gr else new_node gr i) empty_graph in
-
-  (* Clone the graph arcs except those from the Origin and toward the Destination *)
-  e_fold graph (fun gr arc -> if arc.src==0 || arc.tgt==(-1) then gr else add_arc gr arc.src arc.tgt arc.lbl) (trimmedgraph)

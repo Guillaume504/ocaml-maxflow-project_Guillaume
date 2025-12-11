@@ -101,3 +101,13 @@ let fordfulkerson graph origin destination =
     (* Otherwise, the flow of the arc is the remaining capacity of the result arc - its total capacity.
      * The resulted flow must be above 0 *)
     | Some x -> let arc2 = {arc1 with lbl = (max 0 (arc1.lbl-x.lbl))} in new_arc gr arc2) (clone_nodes graph)
+
+let bipartitematching graph = 
+  
+  let graph = fordfulkerson graph 0 (-1) in 
+
+  (* Clone the graph nodes except Origin and Destination. *)
+  let trimmedgraph = n_fold graph (fun gr i -> if i==0 || i==(-1) then gr else new_node gr i) empty_graph in
+
+  (* Clone the graph arcs except those from the Origin and toward the Destination *)
+  e_fold graph (fun gr arc -> if arc.src==0 || arc.tgt==(-1) then gr else add_arc gr arc.src arc.tgt arc.lbl) (trimmedgraph)

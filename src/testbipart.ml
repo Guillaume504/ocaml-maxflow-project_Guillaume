@@ -25,11 +25,16 @@ let () =
 
   (* Open file *)
   let bires = bi_from_file infile in
+
+  (* Take the graph from the bipartres *)
   let graph = bires.graph in 
-  let graph = fordfulkerson graph 0 (-1) in
-  let graph = trimgraph graph in
+
+  (* Apply the bipartite matching algorithm *)
+  let graph = bipartitematching graph in
+
+  (* Write the resulted matching in file "answer.txt" *)
   let () = bi_write_file bires.namefromid "answer.txt" graph in
 
+  (* Export the resulted flow graph into a dot file "outfile" *)
   export ~nodename:bires.namefromid ~labelform:(label_capacity bires.graph) outfile graph;
-
   ()

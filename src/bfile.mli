@@ -13,7 +13,3 @@ val bi_write_file: (id -> string) -> path -> int graph -> unit
 
 (* Read the bipartite file and computes the associated bipartres. *)
 val bi_from_file: path -> bipartres
-
-(* Remove the origin and destination nodes from the given graph.
- * The origin must have the id '0' and the destination the id '-1' *)
-val trimgraph: int graph -> int graph

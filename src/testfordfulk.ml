@@ -28,6 +28,10 @@ let () =
 
   (* Open file *)
   let graph = from_file infile in
+
+  (* Apply the Ford-Fulkerson algorithm to the graph between node source and node sink *)
   let graph1 = fordfulkerson graph source sink in
+
+  (* Export the resulted flow dijk graph into a dot file "outfile" *)
   export ~labelform:(label_capacity graph) outfile graph1;
   ()

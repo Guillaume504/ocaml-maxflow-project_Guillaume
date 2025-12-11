@@ -8,11 +8,10 @@ type path = string
 (* Values are read as int. *)
 val bg_from_file: path -> int dijk graph
 
-(* Similarly, we write only a string graph.
- * If necessary, use gmap (to be written by you) to prepare the input graph. *)
+(* Similarly, we write only an int dijk graph. *)
 val bg_write_file: path -> int dijk graph -> unit
 
-(* Export the int graph into a svg .txt file.
+(* Export the int dijk graph into a svg .txt file.
  * nodename can be entered to change the name of the nodes in the svp graph.
  * labelform can be entered to change the form of the label in the svg graph. *)
 val bg_export: ?nodename:(id -> path) -> ?labelform:(int dijk arc -> string) -> path -> int dijk graph -> unit

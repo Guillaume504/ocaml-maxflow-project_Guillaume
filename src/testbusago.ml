@@ -28,6 +28,10 @@ let () =
 
   (* Open file *)
   let graph = bg_from_file infile in
+
+  (* Apply the Busacker-Gowen algorithm to the graph between node source and node sink *)
   let graph2 = busackergowen graph source sink in
+
+  (* Export the resulted flow dijk graph into a dot file "outfile" *)
   bg_export ~labelform:(bg_label_capacity graph) outfile graph2;
   ()
