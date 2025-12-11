@@ -5,9 +5,9 @@ type 'a graph
 (* Each node has a unique identifier (a number). *)
 type id = int
 
-type flow = int
-
-type capacity = int
+type 'a dijk = 
+  { value: 'a ;
+    cost: int }
 
 (* Type of an arc (edge) with labels of type 'a *)
 type 'a arc =

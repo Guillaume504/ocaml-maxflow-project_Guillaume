@@ -1,10 +1,6 @@
 open Graph
 open Tools
 
-type 'a dijk = 
-  { value: 'a ;
-    cost: int }
-
 type path = string
   
 (* Return true ifn the arc has a positive remaining capacity. *)
@@ -55,13 +51,18 @@ let busackergowen graph origin destination =
 
         in 
         updatenodescost outarcs;
-        let (_cost,nodetomark,path) = n_fold graph1 (fun (currentcost,currentnode,currentpath) id -> let (bool,cost,path) = Hashtbl.find hashmarked id in
-          if (bool || cost<=currentcost) then (currentcost,currentnode,currentpath)
+        let (cost,nodetomark,path) = n_fold graph1 (fun (currentcost,currentnode,currentpath) id -> let (bool,cost,path) = Hashtbl.find hashmarked id in
+          if (bool || cost>=currentcost) then (currentcost,currentnode,currentpath)
           else (cost,id,path)) (max_int,0,[]) in 
         
-        Hashtbl.replace hashmarked nodetomark (true,nodetomark,path);
+        if (cost == max_int) then false
+
+        else (
+
+          Hashtbl.replace hashmarked nodetomark (true,cost,path);
         
-        dijk_find_path graph1 nodetomark
+          dijk_find_path graph1 nodetomark
+        )
       )
 
     in
@@ -71,6 +72,8 @@ let busackergowen graph origin destination =
     if bool then (
 
       let (_,_,path) = Hashtbl.find hashmarked destination in 
+
+      let path = List.rev path in
 
       let rec find_flow inid maxflow = function
         | [] -> maxflow
@@ -102,6 +105,7 @@ let busackergowen graph origin destination =
 
       in 
       let graph3 = add_flow graph3 origin path in
+      Hashtbl.reset hashmarked;
       dijk_mainloop graph3
 
     ) else (

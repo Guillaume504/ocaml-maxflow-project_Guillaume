@@ -1,7 +1,5 @@
 open Gfile
 open Fordfulk
-open Bfile
-open Busagowen
     
 let () =
 
@@ -24,18 +22,12 @@ let () =
   and outfile = Sys.argv.(4)
   
   (* These command-line arguments are not used for the moment. *)
-  and _source = int_of_string Sys.argv.(2)
-  and _sink = int_of_string Sys.argv.(3)
+  and source = int_of_string Sys.argv.(2)
+  and sink = int_of_string Sys.argv.(3)
   in
 
   (* Open file *)
-  let bires = bi_from_file infile in
-  let graph = bires.graph in 
-  let graph = fordfulkerson graph 0 (-1) in
-  let graph = trimgraph graph in
-  let () = bi_write_file bires.namefromid "answer.txt" graph in
-
-  export ~nodename:bires.namefromid ~labelform:(labelwithcapacity bires.graph) outfile graph;
-
+  let graph = from_file infile in
+  let graph1 = fordfulkerson graph source sink in
+  export ~labelform:(label_capacity graph) outfile graph1;
   ()
-

@@ -4,12 +4,11 @@
   You may read it though, out of curiosity.
 *)
 
-
 type id = int
 
-type flow = int
-
-type capacity = int
+type 'a dijk = 
+  { value: 'a ;
+    cost: int }
 
 type 'a arc =
   { src: id ;

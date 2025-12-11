@@ -8,7 +8,9 @@ all: build
 
 build:
 	@echo "\n   🚨  COMPILING  🚨 \n"
-	dune build src/ftest.exe
+	dune build src/testbipart.exe
+	dune build src/testbusago.exe
+	dune build src/testfordfulk.exe
 	ls src/*.exe > /dev/null && ln -fs src/*.exe .
 
 format:
@@ -17,11 +19,11 @@ format:
 edit:
 	code . -n
 
-demo: build
-	@echo "\n   ⚡  EXECUTING  ⚡\n"
-	./ftest.exe graphs/${graph} $(src) $(dst) outfile
-	@echo "\n   🥁  RESULT (content of outfile)  🥁\n"
-	@cat outfile
+#demo: build
+#	@echo "\n   ⚡  EXECUTING  ⚡\n"
+#	./ftest.exe graphs/${graph} $(src) $(dst) outfile
+#	@echo "\n   🥁  RESULT (content of outfile)  🥁\n"
+#	@cat outfile
 
 clean:
 	find -L . -name "*~" -delete

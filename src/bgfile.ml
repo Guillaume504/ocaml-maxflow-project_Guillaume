@@ -1,20 +1,7 @@
 open Graph
 open Printf
-    
+
 type path = string
-
-(* Format of text files:
-   % This is a comment
-
-   % A node with its coordinates (which are not used), and its id.
-   n 88.8 209.7 0
-   n 408.9 183.0 1
-
-   % Edges: e source dest label id  (the edge id is not used).
-   e 3 1 11 0 
-   e 0 2 8 1
-
-*)
 
 (* Compute arbitrary position for a node. Center is 300,300 *)
 let iof = int_of_float
@@ -30,9 +17,8 @@ let compute_y id =
   let sgn = if delta mod 2 = 0 then -1 else 1 in
 
   300 + sgn * (delta / 2) * 100
-  
 
-let write_file path graph =
+let bg_write_file path graph =
 
   (* Open a write-file. *)
   let ff = open_out path in
@@ -45,18 +31,14 @@ let write_file path graph =
   fprintf ff "\n" ;
 
   (* Write all arcs *)
-  let _ = e_fold graph (fun count arc -> fprintf ff "e %d %d %d %s\n" arc.src arc.tgt count arc.lbl ; count + 1) 0 in
+  let _ = e_fold graph (fun count arc -> fprintf ff "e %d %d %d %d %d\n" arc.src arc.tgt count (arc.lbl.value) (arc.lbl.cost) ; count + 1) 0 in
   
   fprintf ff "\n%% End of graph\n" ;
   
   close_out ff ;
   ()
 
-let label_capacity graph arc = match find_arc graph arc.src arc.tgt with
-    | None -> failwith "Impossible"
-    | Some x -> Printf.sprintf "%d/%d" arc.lbl x.lbl
-
-let export ?(nodename=string_of_int) ?(labelform=(fun x -> string_of_int x.lbl)) path graph =
+let bg_export ?(nodename=string_of_int) ?(labelform=(fun x -> string_of_int x.lbl.value)) path graph =
 
   (* Open a write-file. *)
   let ff = open_out path in
@@ -70,7 +52,7 @@ let export ?(nodename=string_of_int) ?(labelform=(fun x -> string_of_int x.lbl))
   node [shape = circle];\n" ;
 
   (* Write all arcs *)
-  let _ = e_fold graph (fun count arc -> fprintf ff "  %s -> %s [label = \"%s\"];\n" (nodename arc.src) (nodename arc.tgt) (labelform arc) ; count + 1) 0 in
+  let _ = e_fold graph (fun count arc -> fprintf ff "  %s -> %s [label = \"%s (%d)\"];\n" (nodename arc.src) (nodename arc.tgt) (labelform arc) arc.lbl.cost; count + 1) 0 in
   
   fprintf ff "}" ;
   
@@ -90,8 +72,8 @@ let ensure graph id = if node_exists graph id then graph else new_node graph id
 
 (* Reads a line with an arc. *)
 let read_arc graph line =
-  try Scanf.sscanf line "e %d %d %_d %s@%%"
-        (fun src tgt lbl -> let lbl = int_of_string (String.trim lbl) in new_arc (ensure (ensure graph src) tgt) { src ; tgt ; lbl } )
+  try Scanf.sscanf line "e %d %d %_d %d %s@%%"
+        (fun src tgt cost lbl -> let value = int_of_string (String.trim lbl) in new_arc (ensure (ensure graph src) tgt) { src=src ; tgt=tgt ; lbl={value=value;cost=cost} } )
   with e ->
     Printf.printf "Cannot read arc in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
     failwith "from_file"
@@ -103,7 +85,7 @@ let read_comment graph line =
     Printf.printf "Unknown line:\n%s\n%!" line ;
     failwith "from_file"
 
-let from_file path =
+let bg_from_file path =
 
   let infile = open_in path in
 
@@ -136,3 +118,7 @@ let from_file path =
   
   close_in infile ;
   final_graph
+
+let bg_label_capacity graph arc = match find_arc graph arc.src arc.tgt with
+    | None -> failwith "Impossible"
+    | Some x -> Printf.sprintf "%d/%d" arc.lbl.value x.lbl.value
