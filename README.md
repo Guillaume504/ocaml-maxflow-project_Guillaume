@@ -27,3 +27,5 @@ To test the bipartite matching with context "graphs/bipartite.txt"
 
 To test the Busacker-Gowen algorithm with graph "graphs/maxflowmincost.txt" between node 0 and 5
 ./testbusago.exe graphs/maxflowmincost.txt 0 5 "test3.txt" && dot -Tsvg test3.txt > test3.svg
+
+Busacker-Gowen algorithm uses almost the same type of graph file as Ford-Fulkerson except an additionnal integer representing the cost before the label value for the arcs.
